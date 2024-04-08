@@ -5,10 +5,8 @@ document.addEventListener("DOMContentLoaded", function () {
   };
   const API_URL =
     "https://fsa-crud-2aa9294fe819.herokuapp.com/api/2401_FTB_MT_WEB_PT/events";
-
-  const partyE1 = document.querySelector("#party");
+  const partyList = document.getElementById("party");
   const form = document.querySelector("form");
-  console.log(form);
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -35,11 +33,12 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log(result.error);
         throw new Error(result.error.message);
       }
+      render();
     } catch (error) {
       console.error(error);
     }
-    render();
   }
+
   if (form) {
     form.addEventListener("submit", handleSubmit);
   }
@@ -62,22 +61,22 @@ document.addEventListener("DOMContentLoaded", function () {
     if (state.parties.length) {
       const partyCards = state.parties.map((party) => {
         console.log("Creating party card for:", party);
-        const partyE1 = document.createElement("li");
-        partyE1.classList.add("box");
+        const partyEl = document.createElement("li");
+        partyEl.classList.add("box");
         const eventDate = new Date(party.date).toLocaleDateString(undefined, {
           year: "numeric",
           month: "long",
           day: "numeric",
         });
-        partyE1.innerHTML = `<h2>${party.name}</h2>
+        partyEl.innerHTML = `<h2>${party.name}</h2>
                 <p>Description: ${party.description}</p>
                 <p>Date: ${eventDate}</p>
                 <p>Location: ${party.location}</p>
                 <button class="delete-button" data-id="${party.id}">Delete</button>`;
-        return partyE1;
+        return partyEl;
       });
 
-      partyE1.replaceChildren(...partyCards);
+      partyList.replaceChildren(...partyCards);
 
       console.log("Party cards appended to form:", partyCards);
 
@@ -90,9 +89,9 @@ document.addEventListener("DOMContentLoaded", function () {
               method: "DELETE",
             });
             if (!response.ok) {
-              throw new Error("Failed to delte party");
+              throw new Error("Failed to delete party");
             }
-            //remove party from state
+            // Remove party from state
             state.parties = state.parties.filter(
               (party) => party.id !== partyId
             );
