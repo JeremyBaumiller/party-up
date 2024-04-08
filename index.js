@@ -46,11 +46,8 @@ document.addEventListener("DOMContentLoaded", function () {
   async function getEvents() {
     try {
       const response = await fetch(API_URL);
-      console.log(response);
       const party = await response.json();
-      console.log(party);
       state.parties = party.data;
-      console.log(state);
     } catch (error) {
       alert(error);
     }
@@ -69,16 +66,14 @@ document.addEventListener("DOMContentLoaded", function () {
           day: "numeric",
         });
         partyEl.innerHTML = `<h2>${party.name}</h2>
-                <p>Description: ${party.description}</p>
-                <p>Date: ${eventDate}</p>
-                <p>Location: ${party.location}</p>
-                <button class="delete-button" data-id="${party.id}">Delete</button>`;
+                    <p>Description: ${party.description}</p>
+                    <p>Date: ${eventDate}</p>
+                    <p>Location: ${party.location}</p>
+                    <button class="delete-button" data-id="${party.id}">Delete</button>`;
         return partyEl;
       });
 
       partyList.replaceChildren(...partyCards);
-
-      console.log("Party cards appended to form:", partyCards);
 
       const deleteButtons = document.querySelectorAll(".delete-button");
       deleteButtons.forEach((button) => {
@@ -104,4 +99,40 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   };
   render();
+
+  // New code for adding parties from the API
+  const partyForm = document.getElementById("party-form");
+  partyForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const formData = new FormData(partyForm);
+    const name = formData.get("name");
+    const date = formData.get("date");
+    const location = formData.get("location");
+    const description = formData.get("description");
+
+    try {
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          date,
+          location,
+          description,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to add party");
+      }
+
+      await render(); // Refresh the party list after adding the new party
+      partyForm.reset(); // Reset the form fields
+    } catch (error) {
+      console.error(error);
+    }
+  });
 });

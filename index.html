@@ -6,8 +6,22 @@
     <title>Party-Up</title>
   </head>
   <body>
+    <button id="myButton">Add Party</button>
     <h1>Party-Up</h1>
     <ul id="party"></ul>
+    <form id="party-form">
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name" required /><br />
+      <button type="submit">Add Party</button>
+    </form>
     <script src="index.js"></script>
+    <script>
+      document.addEventListener("DomContentLoaded", function () {
+        const button = document.getElementById("myButton");
+        button.addEventListener("click", function () {
+          console.log("Button clicked!");
+        });
+      });
+    </script>
   </body>
 </html>
